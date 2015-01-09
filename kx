@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
+#DEBUG=1
 
 abort(){
 	echo "kx ERROR: $1" >&2
@@ -43,9 +45,11 @@ then
 		PACKAGE_MANAGER="yum"
 	fi
 else
-	abort "Unable to determine package manager"
+	abort "Unable to determine package manager."
 fi
-
+if [ -z $DEBUG ]; then
+    echo 'Detected Package Manager: '$PACKAGE_MANAGER
+fi
 
 if [ $(id -u) -ne 0 ] && which sudo >/dev/null
 then
@@ -61,6 +65,14 @@ else
 	ALIASOREXEC="alias"
 fi
 
+if [ -z $DEBUG ]; then
+    echo 'Detected ALIASOREXEC: '$ALIASOREXEC
+fi
+
+
+get_kinstall(){
+	get_ki
+}
 get_ki(){
 	#PACKAGE_MANAGER=$(get_package_manager)
 	#SUDO=$(get_use_sudo)
@@ -75,12 +87,18 @@ get_ki(){
 	if [ "$PACKAGE_MANAGER" = "apt" ]
 	then
 		CMD="apt-get install"
+	elif [ "$PACKAGE_MANAGER" = "aptitude" ]
+	then
+		CMD="aptitude install"
 	elif [ "$PACKAGE_MANAGER" = "packer" ]
 	then
 		CMD="pacman -S"
 	elif [ "$PACKAGE_MANAGER" = "pacman" ]
 	then
 		CMD="pacman -S"
+	elif [ "$PACKAGE_MANAGER" = "yaourt" ]
+	then
+		CMD="yaourt -Sa"
 	elif [ "$PACKAGE_MANAGER" = "yum" ]
 	then
 		CMD="yum install"
@@ -91,17 +109,27 @@ get_ki(){
 	then
 		CMD="emerge"
 	else
-		echo ""
+		echo "Package manager not supported: "$PACKAGE_MANAGER"."
 		return 0
 	fi
-	echo "${PRE}${CMD}${POST}"
+	
+    if [ -z $DEBUG ]; then
+        echo 'Assembled PRE: '$PRE
+        echo 'Assembled CMD: '$CMD
+        echo 'Assembled POST: '$POST
+    fi
+	RESULT="${PRE}${CMD}${POST}"
+    if [ -z $DEBUG ]; then
+        echo 'Assembled command: '$RESULT  
+    fi
+	echo $RESULT
 }
 
 if [ "$ALIASOREXEC" = "alias" ]
 then
 	for k in "i" #"r" "u" "U" "l" "c" "s" "b" "w" "f"
 	do
-		CMD=$(eval "get_k$k")
+		CMD=eval "get_k$k"  # If called within $() will convert newlines into spaces.
 		if [ ! -z "$CMD" ]
 		then
 			echo $CMD
@@ -112,7 +140,7 @@ else
 	then
 		k="$1"
 		shift
-		CMD=$(eval "get_k$k")
+		CMD=eval "get_k$k" # If called within $() will convert newlines into spaces.
 		if [ ! -z "$CMD" ]
 		then
 			echo $CMD $@
