@@ -1,2 +1,36 @@
-I'll fill out more about the README later, want to get the git repo up now
-before I forget.
+Package Manager Abstraction
+========
+
+
+Usage
+------
+
+### Either use in your own scripts to reduce code duplication.
+e.g. via
+    CMD=$(/path/to/kx install <package>)
+    CMD
+
+
+
+### Or call directly from the command line:
+
+EITHER to show the command:
+
+    /path/to/kx i <package>
+
+OR to execute immediately:
+
+    $(/path/to/kx i <package>)
+
+
+
+Debug
+------
+
+
+    DEBUG=1 && ~/kx__packagemanagerabstraction/kx i kicadefore I forget.
+
+OR 
+    
+    DEBUG=1 ~/kx__packagemanagerabstraction/kx i kicadefore I forget.
+
