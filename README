@@ -16,11 +16,15 @@ e.g. via
 
 EITHER to show the command:
 
-    /path/to/kx i <package>
+    /path/to/kx i
 
 OR to execute immediately:
 
-    $(/path/to/kx i <package>)
+    $(/path/to/kx i) <package>
+
+    or:
+    
+    `/path/to/kx i` <package>
 
 
 
@@ -28,9 +32,9 @@ Debug
 ------
 
 
-    DEBUG=1 && ~/kx__packagemanagerabstraction/kx i kicadefore I forget.
+    DEBUG=1 && ~/kx__packagemanagerabstraction/kx i
 
 OR 
     
-    DEBUG=1 ~/kx__packagemanagerabstraction/kx i kicadefore I forget.
+    DEBUG=1 ~/kx__packagemanagerabstraction/kx i
 

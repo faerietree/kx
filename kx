@@ -7,6 +7,12 @@ abort(){
 	exit 1
 
 }
+debug() {
+    if [ ! -z $DEBUG ]; then
+        echo "$1"
+	fi
+}
+
 
 if [ -f /etc/arch-release ]
 then
@@ -47,11 +53,9 @@ then
 else
 	abort "Unable to determine package manager."
 fi
-if [ -z $DEBUG ]; then
-    echo 'Detected Package Manager: '$PACKAGE_MANAGER
-fi
+#debug 'Detected Package Manager: '$PACKAGE_MANAGER
 
-if [ $(id -u) -ne 0 ] && which sudo >/dev/null
+if [ $(id -u) -ne 0 ] && [ command -v sudo >/dev/null 2>&1 ]
 then
 	SUDO="sudo "
 else
@@ -65,9 +69,7 @@ else
 	ALIASOREXEC="alias"
 fi
 
-if [ -z $DEBUG ]; then
-    echo 'Detected ALIASOREXEC: '$ALIASOREXEC
-fi
+#debug 'Detected ALIASOREXEC: '$ALIASOREXEC
 
 
 get_kinstall(){
@@ -113,15 +115,13 @@ get_ki(){
 		return 0
 	fi
 	
-    if [ -z $DEBUG ]; then
-        echo 'Assembled PRE: '$PRE
-        echo 'Assembled CMD: '$CMD
-        echo 'Assembled POST: '$POST
-    fi
+    #if [ -n $DEBUG ]; then
+    #    echo 'Assembled PRE: '$PRE
+    #    echo 'Assembled CMD: '$CMD
+    #    echo 'Assembled POST: '$POST
+    #fi
 	RESULT="${PRE}${CMD}${POST}"
-    if [ -z $DEBUG ]; then
-        echo 'Assembled command: '$RESULT  
-    fi
+    #debug 'Assembled command: '$RESULT  
 	echo $RESULT
 }
 
